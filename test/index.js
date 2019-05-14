@@ -67,7 +67,10 @@ describe('Utils methods', function () {
 describe('Sequelize', function () {
 
     it('should be connected to database', function () {
-        sequelize = new Sequelize(options.db_name, options.user, options.password, { logging : false });
+        sequelize = new Sequelize('', '', '', {
+            dialect: 'sqlite',
+            logging: false,
+        });
     });
 
     it('should init i18n module', function () {
@@ -121,8 +124,7 @@ describe('Sequelize-i18n', function () {
             .then(function (result) {
                 result.should.not.equal(null);
                 result.length.should.equal(2);
-                result[0].should.have.property('Tables_in_' + options.db_name);
-                result[0]['Tables_in_' + options.db_name].should.equal('model');
+                result.should.contain('model');
                 done();
             })
     });
@@ -132,8 +134,7 @@ describe('Sequelize-i18n', function () {
             .then(function (result) {
                 result.should.not.equal(null);
                 result.length.should.equal(2);
-                result[1].should.have.property('Tables_in_' + options.db_name);
-                result[1]['Tables_in_' + options.db_name].should.equal('model_i18ns');
+                result.should.contain('model_i18ns');
                 done();
             })
     });
