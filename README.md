@@ -154,12 +154,30 @@ Deleting a Product instance will also delete i18n values
 
 An Sequelize instance method is added to the Sequelize model in order to set virtual i18n property in the lanuage you want.
 
-    product_instance.get_i18n( "EN" );
-    // product_instance.name == "english name"
-    
-    product_instance.get_i18n( "FR" );
-    // product_instance.name == "french name"
-    
-    product_instance.get_i18n( "ES" );
-    // product_instance.name == "" if options.default_language_fallback is set to false
-    // product_instance.name == "french name" if options.default_language_fallback is set to true
+```javascript
+product_instance.get_i18n( "EN" );
+// product_instance.name == "english name"
+
+product_instance.get_i18n( "FR" );
+// product_instance.name == "french name"
+
+product_instance.get_i18n( "ES" );
+// product_instance.name == "" if
+
+options.default_language_fallback is set to false
+// product_instance.name == "french name" if
+
+options.default_language_fallback is set to true
+```
+
+## Development environment
+
+To use the included dev env, install [Docker](https://www.docker.com/) and start env with:
+
+```shell
+res/bin/runcontainer
+```
+
+## Known Issues
+
+Npm build script fails on Docker, see https://github.com/npm/npm/issues/17346 for more details.

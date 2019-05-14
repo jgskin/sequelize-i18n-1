@@ -1,0 +1,15 @@
+ROOT="$( cd "$( dirname "$0" )/../../" && pwd )"
+IMGNAME="sequelize-i18n"
+CONTAINERNAME="${IMGNAME}_$( date +%s )"
+
+# build img
+docker build ${ROOT} -t ${IMGNAME}
+
+# copy node modules
+rm -rf ${ROOT}/node_modules
+docker run --name ${CONTAINERNAME} ${IMGNAME} /bin/true
+docker cp ${CONTAINERNAME}:/src/node_modules ${ROOT}/node_modules
+docker rm -f ${CONTAINERNAME}
+
+# start dev container shell
+docker run --rm -ti -v ${ROOT}:/src ${IMGNAME} bash
