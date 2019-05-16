@@ -6,7 +6,7 @@ CONTAINERNAME="${IMGNAME}_$( date +%s )"
 docker build ${ROOT} -t ${IMGNAME}
 
 # copy node modules
-rm -rf ${ROOT}/node_modules
+sudo rm -rf ${ROOT}/node_modules
 docker run --name ${CONTAINERNAME} ${IMGNAME} /bin/true
 docker cp ${CONTAINERNAME}:/src/node_modules ${ROOT}/node_modules
 docker rm -f ${CONTAINERNAME}

@@ -1,4 +1,4 @@
-var Model = function (sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
     var Model = sequelize.define('model', {
         id : {
             type 			: DataTypes.BIGINT,
@@ -12,13 +12,7 @@ var Model = function (sequelize, DataTypes) {
         reference : {
             type 			: DataTypes.STRING,
         }
-    },
-    
-    { freezeTableName : true });
+    }, { freezeTableName : true });
+
     return Model;
-};
-
-
-module.exports = function(sequelize) {
-    return sequelize.import('model', Model)
 };

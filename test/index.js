@@ -80,7 +80,7 @@ describe('Sequelize', function () {
     });
 
     it('should add the given model', function () {
-        Model = require('./model/model')(sequelize);
+        Model = sequelize.import(`${__dirname}/model/model`);
     });
 
     it('should have imported the exemple model', function () {
@@ -119,48 +119,44 @@ describe('Sequelize-i18n', function () {
             });
     });
 
-    it('should have a "model" table', function (done) {
-        sequelize.showAllSchemas()
+    it('should have a "model" table', function () {
+        return sequelize.showAllSchemas()
             .then(function (result) {
                 result.should.not.equal(null);
                 result.length.should.equal(2);
-                result.should.contain('model');
-                done();
+                result[0].should.have.property('name');
+                result[0]['name'].should.equal('model');
             })
     });
 
-    it('should have a "model_i18ns" table', function (done) {
-        sequelize.showAllSchemas()
+    it('should have a "model_i18ns" table', function () {
+        return sequelize.showAllSchemas()
             .then(function (result) {
                 result.should.not.equal(null);
                 result.length.should.equal(2);
-                result.should.contain('model_i18ns');
-                done();
+                result[1].should.have.property('name');
+                result[1]['name'].should.equal('model_i18ns');
             })
     });
 });
 
 describe('Sequelize-i18n create', function () {
-    it('should return the created model with the i18n property', function (done) {
-        Model.create({
+    it('should return the created model with the i18n property', async () => {
+        // TODO: check model_i18n build here
+        instance = await Model.create({
             id: 1,
             name: 'test',
             reference: "xxx"
-        })
-            .then(function (result)  {
-                if (result) {
-                    instance = result;
-                    return done();
-                }
-            })
-            .catch(function (error) {
-                done(error);
-            })
+        });
     });
 });
 
-describe('Sequelize-i18n find', function () {
-    it('should return i18n values', function () {
+describe('Sequelize-i18n findByPk', () => {
+    it('should return i18n values', async () => {
+        // TODO: remove it after fixing model_i18n built at create
+        // instance = await Model.findByPk(1);
+        // console.log(instance);
+        
         instance.should.have.property('model_i18n');
         instance['model_i18n'].length.should.equal(1);
         instance['model_i18n'][0].should.have.property('name');
@@ -169,16 +165,15 @@ describe('Sequelize-i18n find', function () {
 });
 
 describe('Sequelize-i18n update', function () {
-    it('should set the name property to test2 for default language', function (done) {
-        instance.update( { name: "test-fr-update" } , { language_id : "FR" } ).then( function ( res ) {
-            instance.get_i18n("FR").name.should.equal('test-fr-update');
-            done();
-        })
+    it('should set the name property to test2 for default language', async () => {
+        await instance.update( { name: "test-fr-update" } , { language_id : "FR" });
+
+        instance.get_i18n("FR").name.should.equal('test-fr-update');
     });
 
     it('should set the name property to test-en-update for EN', function (done) {
         instance.update( { name: "test-en-update" }, { language_id : "EN" } ).then( function( res ) {
-            Model.find( { where: { id: 1 } } )
+            Model.findOne( { where: { id: 1 } } )
             .then(function (_result) {
                 _result.get_i18n("EN").name.should.equal('test-en-update');
                 done();
@@ -186,7 +181,6 @@ describe('Sequelize-i18n update', function () {
         })
     });
 });
-
 
 describe('Sequelize-i18n delete', function () {
     it('should delete current instance and its i18n values', function () {
